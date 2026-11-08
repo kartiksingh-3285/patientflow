@@ -1,0 +1,19 @@
+{
+  "citation": "Feng, H., Jia, Y., Zhou, S., Chen, H., & Huang, T. (2023). A Dataset of Service Time and Related Patient Characteristics from an Outpatient Clinic. Data, 8(3), 47.",
+  "paper_url": "https://doi.org/10.3390/data8030047",
+  "repository_url": "https://github.com/fenghaolin/HanguData",
+  "archive_url": "https://doi.org/10.5281/zenodo.7484205",
+  "license": "CC BY-NC-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "source_revision": "f26b66a3e3dd69d45502ff30d934e24b6476218c",
+  "source_url": "https://raw.githubusercontent.com/fenghaolin/HanguData/f26b66a3e3dd69d45502ff30d934e24b6476218c/Data.csv",
+  "source_sha256": "bf4e377c0fd9b4adf65a53b2b2a53d60391808dfdc6d752877c28b6b05956bc8",
+  "extract_sha256": "b1b5aff6138f44a1b11d46a0c5817ccf95f204f3da1f60ecb208c7af4abd252a",
+  "records": 6637,
+  "mean_service_min": 13.36518256240269,
+  "min_service_min": 3.0,
+  "max_service_min": 57.61666666666667,
+  "transformation": "Authors' cleaned Data.csv: ServTime seconds / 60; sorted ascending; all other columns discarded; no additional filtering.",
+  "source_cleaning": "Published Data_process_stat.ipynb retains ServTime between 180 and 3600 seconds inclusive and nonmissing Visit.No.",
+  "limitations": "Duration estimates, not stopwatch measurements. No clinic-arrival timestamps used. Hybrid arrivals and doctor availability are synthetic assumptions. Uniform resampling ignores session/patient heterogeneity. Not clinical validation."
+}

@@ -1,0 +1,64 @@
+1
+00:00:04,890 --> 00:00:21,766
+PatientFlow: project walkthrough
+Plan outpatient doctor capacity. Compare waiting times on the same patients.
+
+2
+00:00:22,703 --> 00:00:40,610
+1. Set up the clinic
+Change settings first. Run comparison applies them; filters do not rerun the model.
+
+3
+00:00:41,547 --> 00:00:59,078
+2. Read the recommendation
+Synthetic demo: 102 patients. Two doctors compared with four recommended doctors.
+
+4
+00:01:00,344 --> 00:01:18,455
+3. Compare patient waiting
+Mean wait: 80.80 to 2.31 minutes. This is a synthetic simulation, not a clinical claim.
+
+5
+00:01:22,953 --> 00:01:40,374
+4. Try a busier clinic
+Busy clinic loads 18 arrivals/hour. Results change only after Run comparison.
+
+6
+00:01:44,594 --> 00:01:59,125
+5. Return to the reproducible example
+Load demo restores the original settings and seed; run it to reproduce the results.
+
+7
+00:02:00,375 --> 00:02:18,521
+6. Find the queue bottleneck
+Queue charts count waiting patients, not patients already in consultation.
+
+8
+00:02:20,531 --> 00:02:39,172
+7. Check doctor utilization
+Use the same arrival window for a fair comparison; full-session metrics include overtime.
+
+9
+00:02:41,437 --> 00:02:58,693
+8. Inspect individual patients
+Search an ID, switch staffing plans, or show only patients who exceeded the target.
+
+10
+00:03:01,531 --> 00:03:18,871
+9. Export the comparison
+Filtered rows, full paired comparison, and input cohort have separate download buttons.
+
+11
+00:03:22,875 --> 00:03:42,955
+10. Use the real-source hybrid mode
+6,637 Hangu duration estimates + synthetic arrivals. Not a real hospital queue replay.
+
+12
+00:03:44,297 --> 00:04:04,477
+11. Explain the two techniques
+Queueing theory estimates capacity. Discrete-event simulation tests a finite cohort.
+
+13
+00:04:05,531 --> 00:04:27,441
+Project summary
+Local Python + Streamlit. Two OR techniques. Transparent data and reproducible comparisons.

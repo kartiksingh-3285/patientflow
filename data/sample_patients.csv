@@ -1,0 +1,4 @@
+patient_id,arrival_min,service_min
+P001,0,5
+P002,2,5
+P003,4,5

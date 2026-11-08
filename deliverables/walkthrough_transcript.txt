@@ -1,0 +1,41 @@
+PatientFlow walkthrough
+Standard computer-generated narration; no voice cloning.
+
+PatientFlow: project walkthrough
+Welcome to Patient Flow, a local hospital waiting time planning project. This is a recording of the actual application. We will configure a clinic, compare staffing plans, and explore queues. The project uses queueing theory and discrete event simulation. This narration uses a standard computer voice.
+
+1. Set up the clinic
+Start with Clinic settings on the left. Choose the data, arrival window, current doctors, maximum doctors, and average waiting target. Here we use eight hours, two current doctors, and a five minute target. Edit several settings, then click Run comparison. Until then, results remain clearly labeled as the last run.
+
+2. Read the recommendation
+The synthetic example contains one hundred and two patients. Queueing theory recommends four doctors, adding two to the current plan. This is the smallest allowed count meeting the model's average wait target. The dashboard warns that current capacity is overloaded. The simulation still serves every admitted patient, including after closing.
+
+3. Compare patient waiting
+Average wait falls from eighty point eight to about two point three minutes, a ninety seven point one percent reduction in this synthetic example. Charts compare typical waits and longer waits. Both plans use identical arrivals and consultation durations; only doctor count changes. These are simulated results, not measured hospital improvements.
+
+4. Try a busier clinic
+Try the Busy clinic preset. It changes nominal demand from twelve to eighteen patients per hour. The settings changed message reminds us that a preset does not silently replace the existing comparison. Click Run comparison to apply it. The application searches the allowed doctor counts and reports waiting times for this busier scenario.
+
+5. Return to the reproducible example
+Choose Load demo and run again to restore the original example. Its fixed random seed recreates the same patients and results. A seed makes a random experiment repeatable. For a more careful investigation, try several different seeds rather than treating one outcome as a guarantee.
+
+6. Find the queue bottleneck
+Open Queues and doctors. Grey shows current staffing; green shows the recommended plan. Each horizontal step counts patients waiting between events, excluding patients already in consultation. The dashed line marks when arrivals close. The toggle lets you focus on that arrival window or include the extra time needed to finish service.
+
+7. Check doctor utilization
+Doctor utilization is the percentage of time spent in consultation. The arrival window compares plans over the same fixed hours. Full session includes time beyond closing. Adding doctors may reduce utilization while shortening waits. That is a capacity tradeoff: this project targets waiting time, but does not calculate staffing costs.
+
+8. Inspect individual patients
+Patient records make the simulation explainable. Search an identifier and switch staffing plans to inspect an individual waiting time. You can also filter patients who exceeded the target. Filters change displayed rows, not the cohort or main results. An average waiting target does not promise the same limit for every patient.
+
+9. Export the comparison
+Download visible patients saves your filtered rows. Paired comparison exports both waiting times for the entire cohort. The input download preserves the arrivals and service durations used in the experiment. Downloads keep full precision and include origin labels, so simulated or hybrid rows are not mistaken for observed hospital records.
+
+10. Use the real-source hybrid mode
+Select Hangu hybrid and run. Consultations are sampled from six thousand six hundred and thirty seven real source duration estimates, without source patient identifiers. Arrivals and staffing remain simulated assumptions. The hybrid label, source citation, and data license are visible. Its waiting time improvements are still simulation outcomes, not clinical evidence.
+
+11. Explain the two techniques
+How it works explains the mathematics. Queueing theory estimates long run waiting from arrivals, consultation speed, and doctor count using Erlang C. Simulation follows individual arrivals, service starts, and departures. Real source durations need not be exponential, so hybrid queueing predictions are approximate. Simulation still uses the sampled duration values exactly.
+
+Project summary
+Patient Flow combines these techniques in a local Python and Streamlit application. It models one outpatient queue, without emergency triage, shifts, or breaks. Editable scenarios, charts, patient searches, and labeled downloads support clear explanations. The lesson is simple: use mathematics to propose capacity, then simulation to measure its effect, while documenting assumptions.
