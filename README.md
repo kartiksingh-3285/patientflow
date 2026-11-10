@@ -11,9 +11,9 @@ When arrivals exceed available doctor capacity, queues grow. PatientFlow:
 - Estimates steady-state waiting with **M/M/c queueing theory (Erlang C)**.
 - Selects the smallest available doctor count meeting a mean-wait target.
 - Tests baseline and recommended staffing with **discrete-event simulation**.
-- Shows wait distributions, queue evolution, bottlenecks, overtime, and utilization.
-- Exports patient-level results and explains assumptions and formulas.
-- Provides explicit Run comparison, demo/busy-clinic presets, and searchable patient records.
+- Shows waiting-time distributions, overtime, utilization, and detailed comparisons.
+- Explains assumptions and formulas alongside the results.
+- Provides explicit Run comparison and demo/busy-clinic presets.
 
 This is an educational consultation-queue model, not clinical triage or medical advice.
 
@@ -81,19 +81,15 @@ Tests:
    Click **Run comparison** to apply settings. The initial demo runs once on opening.
 3. Use **Busy clinic** or **Load demo** to populate settings, then run them.
    Pending changes do not silently alter the saved results or their data-origin labels.
-4. Explore Waiting times, Queues & doctors, Patient records, and How it works.
-   Switch queue horizons/utilization periods without rerunning the experiment.
+4. Explore Waiting times and How it works, including the detailed comparison table.
 5. Upload the sample CSV or your own anonymized rows; set an arrival window containing
-   all arrivals. Download results for a report or presentation.
+   all arrivals.
 6. Try several random seeds; do not interpret one realization as a clinical guarantee.
 7. Choose **Hangu hybrid** for source-based consultations with clearly synthetic
    arrivals. The duration pool is bundled; no network access is needed at runtime.
 
-In Patient records, choose Current or Recommended staffing, search an ID, or
-filter by the individual-wait target. **Download visible patients** saves filtered
-rows; paired comparison and input downloads always contain the full cohort.
-Technical assumptions and detailed tables are available on demand instead of
-dominating the main screen.
+The dashboard compares the same patient cohort under current and recommended
+staffing. Technical assumptions and detailed metrics are available on demand.
 
 CSV format:
 

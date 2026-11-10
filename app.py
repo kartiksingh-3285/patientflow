@@ -229,9 +229,7 @@ def comparison_table(first: SimulationResult, second: SimulationResult) -> pd.Da
     )
 
 
-comparison, capacity, records, guide = st.tabs(
-    ["Waiting times", "Queues & doctors", "Patient records", "How it works"]
-)
+comparison, guide = st.tabs(["Waiting times", "How it works"])
 with comparison:
     st.subheader("Compare the two staffing plans")
     wait_summary = pd.DataFrame(
@@ -261,103 +259,6 @@ with comparison:
         "Full-session duration is the later of closing or final departure, separately for each scenario. "
         "Arrival-window metrics use the same fixed duration and allow a like-for-like capacity comparison."
     )
-
-with capacity:
-    st.subheader("Where does the queue build up?")
-    queue_fig = go.Figure()
-    arrival_window_only = st.toggle("Show arrival window only", value=False)
-    for name, result in [("Current", baseline), ("Recommended", improved)]:
-        queue_fig.add_trace(
-            go.Scatter(
-                x=result.queue["time_min"], y=result.queue["queue_length"],
-                name=name, mode="lines", line={"shape": "hv", "color": COLORS[name]},
-            )
-        )
-    queue_fig.add_vline(x=closing, line_dash="dash", annotation_text="Arrivals close")
-    queue_fig.update_layout(title="Waiting queue over time", xaxis_title="Minutes since opening", yaxis_title="Patients waiting")
-    if arrival_window_only:
-        queue_fig.update_xaxes(range=[0, closing])
-    show_chart(queue_fig)
-    st.caption("Queue excludes patients already in consultation. Simultaneous events are grouped; lines show exact horizontal steps.")
-    doctor_data = pd.concat(
-        [baseline.doctors.assign(Scenario="Current"), improved.doctors.assign(Scenario="Recommended")],
-        ignore_index=True,
-    )
-    utilization_window = st.radio("Doctor utilization period", ["Arrival window", "Full session"], horizontal=True)
-    utilization_field = "window_utilization_pct" if utilization_window == "Arrival window" else "utilization_pct"
-    show_chart(
-        px.bar(
-            doctor_data, x="doctor", y=utilization_field, color="Scenario",
-            barmode="group", color_discrete_map=COLORS,
-            labels={"doctor": "Doctor", utilization_field: "Busy time (%)"},
-            title=f"Doctor utilization · {utilization_window.lower()}",
-        ).update_yaxes(range=[0, 105])
-    )
-    st.dataframe(doctor_data.round(2), hide_index=True, width="stretch")
-    st.subheader("Why this doctor count?")
-    theory_rows = [
-        {
-            "Doctors": prediction.doctors,
-            "Demand / capacity": round(prediction.utilization, 3),
-            "Stable": prediction.stable,
-            "Predicted mean wait (min)": round(prediction.mean_wait_min, 2) if prediction.stable else None,
-            "Predicted mean queue": round(prediction.mean_queue, 2) if prediction.stable else None,
-            "Meets mean target": prediction.stable and prediction.mean_wait_min <= target,
-        }
-        for prediction in recommendation.predictions
-    ]
-    st.dataframe(pd.DataFrame(theory_rows), hide_index=True, width="stretch")
-    st.caption("Blank analytical wait/queue means unstable, not zero. Search stops at the first feasible staffing count, or the limit.")
-
-with records:
-    st.subheader("Look up a patient")
-    scenario = st.radio("Staffing plan", ["Current", "Recommended"], horizontal=True, key="result_scenario")
-    selected = baseline if scenario == "Current" else improved
-    filters = st.columns(2)
-    search = filters[0].text_input("Patient ID", placeholder="For example, P0001", key="patient_search")
-    wait_filter = filters[1].selectbox(
-        "Patients to show", ["All patients", "Waited longer than target", "Started within target"],
-        key="patient_filter",
-    )
-    visible = selected.patients
-    if search.strip():
-        visible = visible.loc[visible["patient_id"].str.contains(search.strip(), case=False, regex=False)]
-    if wait_filter != "All patients":
-        within_target = visible["wait_min"] <= target
-        visible = visible.loc[within_target if wait_filter == "Started within target" else ~within_target]
-    st.caption(f"Showing {len(visible):,} of {len(selected.patients):,} patients. Searches use patient IDs, not names.")
-    if visible.empty:
-        st.info("No patients match these filters. Clear the ID or choose All patients.")
-    st.dataframe(visible.round(3), hide_index=True, width="stretch")
-    def export_csv(frame: pd.DataFrame) -> bytes:
-        exported = frame.assign(
-            data_mode=source,
-            arrival_source="user_supplied" if source == "Upload CSV" else "synthetic_exponential",
-            service_source=(
-                "Hangu_Data.csv_ServTime_seconds_div_60_resampled_CC_BY_NC_SA_4.0"
-                if source == "Hangu hybrid"
-                else "user_supplied" if source == "Upload CSV" else "synthetic_exponential"
-            ),
-        )
-        return exported.to_csv(index=False).encode("utf-8")
-
-    st.download_button(
-        "Download visible patients",
-        export_csv(visible),
-        f"{scenario.lower()}_patients.csv", "text/csv",
-    )
-    merged = baseline.patients.loc[:, ["patient_id", "arrival_min", "service_min", "wait_min"]].rename(
-        columns={"wait_min": "baseline_wait_min"}
-    ).merge(
-        improved.patients.loc[:, ["patient_id", "wait_min"]].rename(columns={"wait_min": "improved_wait_min"}),
-        on="patient_id", validate="one_to_one",
-    )
-    merged["saved_wait_min"] = merged["baseline_wait_min"] - merged["improved_wait_min"]
-    st.download_button("Download paired comparison", export_csv(merged),
-                       "paired_comparison.csv", "text/csv")
-    st.download_button("Download input cohort", export_csv(patients),
-                       "input_patients.csv", "text/csv")
-    st.caption("Visible-patient download uses your filters. Paired comparison and input downloads always include the whole cohort, with data-origin labels.")
 
 with guide:
     st.subheader("How the comparison is calculated")

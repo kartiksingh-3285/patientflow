@@ -11,16 +11,13 @@ class DashboardTests(unittest.TestCase):
     def launch(self):
         return AppTest.from_file(str(APP), default_timeout=30).run()
 
-    def test_default_dashboard_and_records(self):
+    def test_default_dashboard(self):
         app = self.launch()
         self.assertEqual(len(app.exception), 0)
         self.assertEqual(len(app.error), 0)
         self.assertEqual(len(app.metric), 4)
-        self.assertEqual(len(app.tabs), 4)
-        self.assertGreaterEqual(len(app.dataframe), 4)
-        app.radio(key="result_scenario").set_value("Recommended").run()
-        self.assertEqual(len(app.exception), 0)
-        self.assertEqual(len(app.error), 0)
+        self.assertEqual(len(app.tabs), 2)
+        self.assertGreaterEqual(len(app.dataframe), 1)
 
     def test_invalid_doctor_limit_is_visible(self):
         app = self.launch()
@@ -102,31 +99,6 @@ class DashboardTests(unittest.TestCase):
         next(button for button in app.button if button.label == "Load demo").click().run()
         app.button(key="run_comparison").click().run()
         self.assertEqual(app.metric[1].value, "80.80 min")
-
-    def test_patient_filters_do_not_change_cohort(self):
-        app = self.launch()
-        count = app.metric[0].value
-        app.text_input(key="patient_search").set_value("P0001").run()
-        self.assertEqual(len(app.dataframe[-1].value), 1)
-        self.assertEqual(app.dataframe[-1].value.iloc[0]["patient_id"], "P0001")
-        self.assertEqual(app.metric[0].value, count)
-
-        app.text_input(key="patient_search").set_value("not-present").run()
-        self.assertEqual(len(app.dataframe[-1].value), 0)
-        self.assertTrue(any("No patients match" in info.value for info in app.info))
-        app.text_input(key="patient_search").set_value("").run()
-        app.selectbox(key="patient_filter").set_value("Waited longer than target").run()
-        self.assertTrue((app.dataframe[-1].value["wait_min"] > 5).all())
-        self.assertEqual(app.metric[0].value, count)
-
-    def test_queue_and_utilization_controls_do_not_change_results(self):
-        app = self.launch()
-        original_metrics = [metric.value for metric in app.metric]
-        app.toggle[0].set_value(True).run()
-        next(radio for radio in app.radio if radio.label == "Doctor utilization period").set_value("Full session").run()
-        self.assertEqual(len(app.exception), 0)
-        self.assertEqual([metric.value for metric in app.metric], original_metrics)
-
 
 if __name__ == "__main__":
     unittest.main()
